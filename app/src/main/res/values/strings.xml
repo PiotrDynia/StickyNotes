@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">StickyNotes</string>
+    <string name="headline_text">Your sticky notes (swipe to delete)</string>
 </resources>
