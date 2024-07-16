@@ -1,6 +1,13 @@
 package com.example.stickynotes.ui.theme
 
 import androidx.compose.ui.graphics.Color
+import kotlin.random.Random
+
+val LightYellow = Color(0xFFFFF9C4)
+val LightGreen = Color(0xFFC8E6C9)
+val LightBlue = Color(0xFFBBDEFB)
+val LightPink = Color(0xFFF8BBD0)
+val LightPurple = Color(0xFFD1C4E9)
 
 val primaryLight = Color(0xFF006971)
 val onPrimaryLight = Color(0xFFFFFFFF)

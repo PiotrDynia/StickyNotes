@@ -6,7 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -14,27 +15,51 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import kotlin.math.max
+import com.example.stickynotes.ui.theme.LightPurple
 
 @Composable
-fun StickyNote(title: String, description: String, modifier: Modifier = Modifier) {
+fun StickyNote(
+    title: String,
+    description: String,
+    onTitleChange: (String) -> Unit,
+    onDescriptionChange: (String) -> Unit,
+    backgroundColor: Color,
+    modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .background(Color(0xFF5FE3EC))
-            .clip(shape = RoundedCornerShape(15.dp)),
+            .clip(shape = RoundedCornerShape(15.dp))
+            .background(backgroundColor),
     ) {
         Column (modifier = Modifier.padding(8.dp)) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.headlineMedium.copy(
+            TextField(
+                value = title,
+                onValueChange = onTitleChange,
+                textStyle = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.SemiBold,
                 ),
-                maxLines = 3
+                label = {  },
+                maxLines = 2,
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent
+                )
             )
-            Text(
-                text = description,
-                style = MaterialTheme.typography.bodySmall,
-                maxLines = 15
+            TextField(
+                value = description,
+                onValueChange = onDescriptionChange,
+                textStyle = MaterialTheme.typography.bodyLarge,
+                label = {  },
+                maxLines = 15,
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent
+                )
             )
         }
     }
@@ -43,5 +68,11 @@ fun StickyNote(title: String, description: String, modifier: Modifier = Modifier
 @Preview(showBackground = true)
 @Composable
 private fun StickyNotePreview() {
-    StickyNote(title = "Hello", description = "Lorem ipsum".repeat(10))
+    StickyNote(
+        title = "Hello",
+        onTitleChange = {},
+        onDescriptionChange = {},
+        backgroundColor = LightPurple,
+        description = "Lorem ipsum".repeat(10)
+    )
 }
