@@ -20,10 +20,8 @@ class StickyNoteViewModel : ViewModel() {
     private var id = 1
 
     fun addNote() {
-        val newNote = StickyNoteContent(
+        val newNote = StickyNoteData(
             id = id,
-            initialTitle = "",
-            initialDescription = "",
             color = stickyNoteBackgroundColorPalette[currentColorIndex]
             )
 
@@ -32,14 +30,12 @@ class StickyNoteViewModel : ViewModel() {
 
         _state.update { currentState ->
             currentState.copy(
-                notes = currentState.notes + newNote,
-                title = "",
-                description = ""
+                notes = currentState.notes + newNote
             )
         }
     }
 
-    fun updateTitle(newTitle: String, note: StickyNoteContent) {
+    fun updateTitle(newTitle: String, note: StickyNoteData) {
         _state.update { currentState ->
             currentState.notes.find { it.id == note.id }?.let { note ->
                 note.title = newTitle
@@ -48,7 +44,7 @@ class StickyNoteViewModel : ViewModel() {
         }
     }
 
-    fun updateDescription(newDescription: String, note: StickyNoteContent) {
+    fun updateDescription(newDescription: String, note: StickyNoteData) {
         _state.update { currentState ->
             currentState.notes.find { it.id == note.id }?.let { note ->
                 note.description = newDescription

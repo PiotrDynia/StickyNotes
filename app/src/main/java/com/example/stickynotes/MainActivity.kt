@@ -24,6 +24,7 @@ class MainActivity : ComponentActivity() {
             StickyNotesTheme {
                 val viewModel by viewModels<StickyNoteViewModel>()
                 val state by viewModel.state.collectAsState()
+                // TODO change parameters to onEvent and sealed class
                 StickyNoteScreen(
                     state = state,
                     onAddNote = { viewModel.addNote() },
