@@ -27,8 +27,8 @@ class MainActivity : ComponentActivity() {
                 StickyNoteScreen(
                     state = state,
                     onAddNote = { viewModel.addNote() },
-                    onTitleChange = { viewModel.updateTitle(it) },
-                    onDescriptionChange = { viewModel.updateDescription(it) }
+                    onTitleChange = { newTitle, note -> viewModel.updateTitle(newTitle, note!!) },
+                    onDescriptionChange = { newDescription, note -> viewModel.updateDescription(newDescription, note!!)  }
                 )
             }
         }

@@ -17,15 +17,18 @@ class StickyNoteViewModel : ViewModel() {
 
     private var currentColorIndex = 0
     private val stickyNoteBackgroundColorPalette = listOf(LightYellow, LightGreen, LightBlue, LightPink, LightPurple)
+    private var id = 1
 
     fun addNote() {
         val newNote = StickyNoteContent(
-            title = _state.value.title,
-            description = _state.value.description,
+            id = id,
+            initialTitle = "",
+            initialDescription = "",
             color = stickyNoteBackgroundColorPalette[currentColorIndex]
             )
 
         currentColorIndex = (currentColorIndex + 1) % stickyNoteBackgroundColorPalette.size
+        id++
 
         _state.update { currentState ->
             currentState.copy(
@@ -36,14 +39,20 @@ class StickyNoteViewModel : ViewModel() {
         }
     }
 
-    fun updateTitle(newTitle: String) {
+    fun updateTitle(newTitle: String, note: StickyNoteContent) {
         _state.update { currentState ->
+            currentState.notes.find { it.id == note.id }?.let { note ->
+                note.title = newTitle
+            }
             currentState.copy(title = newTitle)
         }
     }
 
-    fun updateDescription(newDescription: String) {
+    fun updateDescription(newDescription: String, note: StickyNoteContent) {
         _state.update { currentState ->
+            currentState.notes.find { it.id == note.id }?.let { note ->
+                note.description = newDescription
+            }
             currentState.copy(description = newDescription)
         }
     }
