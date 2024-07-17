@@ -16,16 +16,18 @@ import kotlinx.coroutines.launch
 
 private const val MAX_TITLE_LENGTH = 40
 private const val MAX_DESCRIPTION_LENGTH = 330
+
 class StickyNoteViewModel : ViewModel() {
     private val _state = MutableStateFlow(StickyNoteState())
     val state: StateFlow<StickyNoteState> = _state.asStateFlow()
 
     private var currentColorIndex = 0
-    private val stickyNoteBackgroundColorPalette = listOf(LightYellow, LightGreen, LightBlue, LightPink, LightPurple)
+    private val stickyNoteBackgroundColorPalette =
+        listOf(LightYellow, LightGreen, LightBlue, LightPink, LightPurple)
     private var id = 1
 
     fun onAction(action: StickyNoteAction) {
-        when(action) {
+        when (action) {
             StickyNoteAction.AddNote -> {
                 val newNote = StickyNoteData(
                     id = id,
@@ -52,20 +54,31 @@ class StickyNoteViewModel : ViewModel() {
                     }
                 }
             }
+
             is StickyNoteAction.UpdateDescription -> {
                 _state.update { currentState ->
                     currentState.notes.find { it.id == action.note.id }?.let { note ->
-                        if (action.newDescription.length <= MAX_DESCRIPTION_LENGTH) note.description = action.newDescription
+                        if (action.newDescription.length <= MAX_DESCRIPTION_LENGTH) note.description =
+                            action.newDescription
                     }
                     currentState
                 }
             }
+
             is StickyNoteAction.UpdateTitle -> {
                 _state.update { currentState ->
                     currentState.notes.find { it.id == action.note.id }?.let { note ->
                         if (action.newTitle.length <= MAX_TITLE_LENGTH) note.title = action.newTitle
                     }
                     currentState
+                }
+            }
+
+            is StickyNoteAction.RemoveNote -> {
+                _state.update { currentState ->
+                    val mutableList = currentState.notes.toMutableList()
+                    mutableList.remove(action.note)
+                    currentState.copy(notes = mutableList.toList())
                 }
             }
         }

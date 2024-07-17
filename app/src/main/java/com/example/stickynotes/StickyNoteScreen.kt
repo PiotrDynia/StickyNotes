@@ -55,7 +55,7 @@ fun StickyNoteScreen(
         LaunchedEffect(state.notes.size) {
             listState.animateScrollToItem(state.notes.size)
         }
-        LazyColumn (
+        LazyColumn(
             contentPadding = PaddingValues(8.dp),
             modifier = Modifier
                 .fillMaxSize(),
@@ -81,8 +81,23 @@ fun StickyNoteScreen(
                     StickyNote(
                         title = note.title,
                         description = note.description,
-                        onTitleChange = { newTitle -> onAction(StickyNoteAction.UpdateTitle(newTitle, note)) },
-                        onDescriptionChange = { newDescription -> onAction(StickyNoteAction.UpdateDescription(newDescription, note)) },
+                        onTitleChange = { newTitle ->
+                            onAction(
+                                StickyNoteAction.UpdateTitle(
+                                    newTitle,
+                                    note
+                                )
+                            )
+                        },
+                        onDescriptionChange = { newDescription ->
+                            onAction(
+                                StickyNoteAction.UpdateDescription(
+                                    newDescription,
+                                    note
+                                )
+                            )
+                        },
+                        onRemove = { onAction(StickyNoteAction.RemoveNote(note)) },
                         backgroundColor = note.color
                     )
                 }
