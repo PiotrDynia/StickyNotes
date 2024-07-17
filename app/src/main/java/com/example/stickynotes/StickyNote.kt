@@ -35,36 +35,6 @@ import com.example.stickynotes.ui.theme.LightPurple
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DismissBackground(dismissState: SwipeToDismissBoxState) {
-    val color = when (dismissState.dismissDirection) {
-        SwipeToDismissBoxValue.StartToEnd -> Color(0xFFFF1744)
-        SwipeToDismissBoxValue.EndToStart -> Color(0xFF1DE9B6)
-        SwipeToDismissBoxValue.Settled -> Color.Transparent
-    }
-
-    Row(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color)
-            .padding(12.dp, 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Icon(
-            Icons.Default.Delete,
-            contentDescription = "delete"
-        )
-        Spacer(modifier = Modifier)
-        Icon(
-            painter = painterResource(R.drawable.ic_launcher_foreground),
-            contentDescription = "Archive"
-        )
-    }
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
 fun StickyNote(
     title: String,
     description: String,
@@ -90,41 +60,44 @@ fun StickyNote(
     )
     SwipeToDismissBox(
         state = dismissState,
-        backgroundContent = { DismissBackground(dismissState = dismissState)},
-        modifier = modifier
-            .clip(shape = RoundedCornerShape(15.dp))
-            .size(316.dp)
-            .background(backgroundColor)
+        backgroundContent = { }
     ) {
-        Column (modifier = Modifier.padding(8.dp)) {
-            TextField(
-                value = title,
-                onValueChange = onTitleChange,
-                textStyle = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.SemiBold,
-                ),
-                label = {  },
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedContainerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent
+        Box(
+            modifier = modifier
+                .clip(shape = RoundedCornerShape(15.dp))
+                .size(316.dp)
+                .background(backgroundColor)
+        ) {
+            Column(modifier = Modifier.padding(8.dp)) {
+                TextField(
+                    value = title,
+                    onValueChange = onTitleChange,
+                    textStyle = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.SemiBold,
+                    ),
+                    label = { },
+                    colors = TextFieldDefaults.colors(
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedContainerColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent
+                    )
                 )
-            )
-            TextField(
-                value = description,
-                onValueChange = onDescriptionChange,
-                textStyle = MaterialTheme.typography.bodyLarge,
-                label = {  },
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedContainerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent
+                TextField(
+                    value = description,
+                    onValueChange = onDescriptionChange,
+                    textStyle = MaterialTheme.typography.bodyLarge,
+                    label = { },
+                    colors = TextFieldDefaults.colors(
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedContainerColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent
+                    )
                 )
-            )
+            }
         }
     }
 }
