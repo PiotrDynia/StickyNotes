@@ -7,9 +7,10 @@ import androidx.compose.ui.graphics.Color
 
 data class StickyNoteData(
     val id: Int,
-    val initialTitle: String = "",
+    var initialTitle: String = "",
     val initialDescription: String = "",
-    val color: Color
+    val color: Color,
+    var visible: Boolean = false
 ) {
     var title by mutableStateOf(initialTitle)
     var description by mutableStateOf(initialDescription)

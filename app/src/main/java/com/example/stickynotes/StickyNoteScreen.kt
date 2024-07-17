@@ -1,11 +1,18 @@
 package com.example.stickynotes
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
@@ -14,8 +21,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
@@ -27,6 +40,7 @@ fun StickyNoteScreen(
     onDescriptionChange: (String, StickyNoteData) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val listState = rememberLazyListState()
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = {
@@ -40,12 +54,16 @@ fun StickyNoteScreen(
         },
         modifier = Modifier.padding(vertical = 64.dp)
     ) { _ ->
+        LaunchedEffect(state.notes.size) {
+            listState.animateScrollToItem(state.notes.size)
+        }
         LazyColumn (
             contentPadding = PaddingValues(8.dp),
             modifier = Modifier
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            state = listState
         ) {
             item {
                 Text(
@@ -57,13 +75,19 @@ fun StickyNoteScreen(
                 items = state.notes,
                 key = { note -> note.id }
             ) { note ->
-                StickyNote(
-                    title = note.title,
-                    description = note.description,
-                    onTitleChange = { newTitle -> onTitleChange(newTitle, note) },
-                    onDescriptionChange = { newDescription -> onDescriptionChange(newDescription, note) },
-                    backgroundColor = note.color
-                )
+                AnimatedVisibility(
+                    visible = note.visible,
+                    enter = fadeIn() + expandVertically(),
+                    exit = fadeOut() + shrinkVertically()
+                ) {
+                    StickyNote(
+                        title = note.title,
+                        description = note.description,
+                        onTitleChange = { newTitle -> onTitleChange(newTitle, note) },
+                        onDescriptionChange = { newDescription -> onDescriptionChange(newDescription, note) },
+                        backgroundColor = note.color
+                    )
+                }
             }
         }
     }

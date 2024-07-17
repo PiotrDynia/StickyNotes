@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextField
@@ -17,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.stickynotes.ui.theme.LightPurple
 
+
 @Composable
 fun StickyNote(
     title: String,
@@ -28,6 +30,7 @@ fun StickyNote(
     Box(
         modifier = modifier
             .clip(shape = RoundedCornerShape(15.dp))
+            .size(316.dp)
             .background(backgroundColor),
     ) {
         Column (modifier = Modifier.padding(8.dp)) {
@@ -38,7 +41,6 @@ fun StickyNote(
                     fontWeight = FontWeight.SemiBold,
                 ),
                 label = {  },
-                maxLines = 2,
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.Transparent,
                     focusedContainerColor = Color.Transparent,
@@ -52,7 +54,6 @@ fun StickyNote(
                 onValueChange = onDescriptionChange,
                 textStyle = MaterialTheme.typography.bodyLarge,
                 label = {  },
-                maxLines = 15,
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.Transparent,
                     focusedContainerColor = Color.Transparent,
