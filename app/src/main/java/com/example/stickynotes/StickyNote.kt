@@ -75,13 +75,18 @@ fun StickyNote(
     modifier: Modifier = Modifier) {
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = {
-            if (it == SwipeToDismissBoxValue.EndToStart || it == SwipeToDismissBoxValue.StartToEnd) {
-                onRemove()
-                true
-            } else {
-                false
+            when(it) {
+                SwipeToDismissBoxValue.StartToEnd -> {
+                    onRemove()
+                }
+                SwipeToDismissBoxValue.EndToStart -> {
+                    onRemove()
+                }
+                SwipeToDismissBoxValue.Settled -> return@rememberSwipeToDismissBoxState  false
             }
-        }
+            return@rememberSwipeToDismissBoxState true
+        },
+        positionalThreshold = { it * .25f }
     )
     SwipeToDismissBox(
         state = dismissState,
