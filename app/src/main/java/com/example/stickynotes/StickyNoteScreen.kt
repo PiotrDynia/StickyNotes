@@ -35,16 +35,14 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun StickyNoteScreen(
     state: StickyNoteState,
-    onAddNote: () -> Unit,
-    onTitleChange: (String, StickyNoteData) -> Unit,
-    onDescriptionChange: (String, StickyNoteData) -> Unit,
+    onAction: (StickyNoteAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                onAddNote()
+                onAction(StickyNoteAction.AddNote)
             }) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -83,8 +81,8 @@ fun StickyNoteScreen(
                     StickyNote(
                         title = note.title,
                         description = note.description,
-                        onTitleChange = { newTitle -> onTitleChange(newTitle, note) },
-                        onDescriptionChange = { newDescription -> onDescriptionChange(newDescription, note) },
+                        onTitleChange = { newTitle -> onAction(StickyNoteAction.UpdateTitle(newTitle, note)) },
+                        onDescriptionChange = { newDescription -> onAction(StickyNoteAction.UpdateDescription(newDescription, note)) },
                         backgroundColor = note.color
                     )
                 }

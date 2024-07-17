@@ -24,48 +24,50 @@ class StickyNoteViewModel : ViewModel() {
     private val stickyNoteBackgroundColorPalette = listOf(LightYellow, LightGreen, LightBlue, LightPink, LightPurple)
     private var id = 1
 
-    fun addNote() {
-        val newNote = StickyNoteData(
-            id = id,
-            color = stickyNoteBackgroundColorPalette[currentColorIndex]
-            )
-
-        currentColorIndex = (currentColorIndex + 1) % stickyNoteBackgroundColorPalette.size
-        id++
-
-        _state.update { currentState ->
-            currentState.copy(
-                notes = currentState.notes + newNote
-            )
-        }
-
-        viewModelScope.launch {
-            delay(100)
-            _state.update { currentState ->
-                currentState.copy(
-                    notes = currentState.notes.map { note ->
-                        if (note.id == newNote.id) note.copy(visible = true) else note
-                    }
+    fun onAction(action: StickyNoteAction) {
+        when(action) {
+            StickyNoteAction.AddNote -> {
+                val newNote = StickyNoteData(
+                    id = id,
+                    color = stickyNoteBackgroundColorPalette[currentColorIndex]
                 )
-            }
-        }
-    }
 
-    fun updateTitle(newTitle: String, note: StickyNoteData) {
-        _state.update { currentState ->
-            currentState.notes.find { it.id == note.id }?.let { note ->
-                if (newTitle.length <= MAX_TITLE_LENGTH) note.title = newTitle
-            }
-            currentState
-        }
-    }
+                currentColorIndex = (currentColorIndex + 1) % stickyNoteBackgroundColorPalette.size
+                id++
 
-    fun updateDescription(newDescription: String, note: StickyNoteData) {
-        _state.update { currentState ->
-            currentState.notes.find { it.id == note.id }?.let { note ->
-                if (newDescription.length <= MAX_DESCRIPTION_LENGTH) note.description = newDescription
+                _state.update { currentState ->
+                    currentState.copy(
+                        notes = currentState.notes + newNote
+                    )
+                }
+
+                viewModelScope.launch {
+                    delay(100)
+                    _state.update { currentState ->
+                        currentState.copy(
+                            notes = currentState.notes.map { note ->
+                                if (note.id == newNote.id) note.copy(visible = true) else note
+                            }
+                        )
+                    }
+                }
             }
-            currentState
+            is StickyNoteAction.UpdateDescription -> {
+                _state.update { currentState ->
+                    currentState.notes.find { it.id == action.note.id }?.let { note ->
+                        if (action.newDescription.length <= MAX_DESCRIPTION_LENGTH) note.description = action.newDescription
+                    }
+                    currentState
+                }
+            }
+            is StickyNoteAction.UpdateTitle -> {
+                _state.update { currentState ->
+                    currentState.notes.find { it.id == action.note.id }?.let { note ->
+                        if (action.newTitle.length <= MAX_TITLE_LENGTH) note.title = action.newTitle
+                    }
+                    currentState
+                }
+            }
         }
     }
 }
