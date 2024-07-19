@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberSwipeToDismissBoxState
@@ -28,6 +29,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,17 +45,20 @@ fun StickyNote(
     onDescriptionChange: (String) -> Unit,
     onRemove: () -> Unit,
     backgroundColor: Color,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier
+) {
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = {
-            when(it) {
+            when (it) {
                 SwipeToDismissBoxValue.StartToEnd -> {
                     onRemove()
                 }
+
                 SwipeToDismissBoxValue.EndToStart -> {
                     onRemove()
                 }
-                SwipeToDismissBoxValue.Settled -> return@rememberSwipeToDismissBoxState  false
+
+                SwipeToDismissBoxValue.Settled -> return@rememberSwipeToDismissBoxState false
             }
             return@rememberSwipeToDismissBoxState true
         },
@@ -75,7 +81,13 @@ fun StickyNote(
                     textStyle = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.SemiBold,
                     ),
-                    label = { },
+                    placeholder = {
+                        Text(
+                            text = stringResource(R.string.title_placeholder),
+                            fontStyle = FontStyle.Italic,
+                            color = Color.Gray
+                        )
+                    },
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = Color.Transparent,
                         focusedContainerColor = Color.Transparent,
@@ -88,7 +100,13 @@ fun StickyNote(
                     value = description,
                     onValueChange = onDescriptionChange,
                     textStyle = MaterialTheme.typography.bodyLarge,
-                    label = { },
+                    placeholder = {
+                        Text(
+                            text = stringResource(R.string.description_placeholder),
+                            fontStyle = FontStyle.Italic,
+                            color = Color.Gray
+                        )
+                    },
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = Color.Transparent,
                         focusedContainerColor = Color.Transparent,
