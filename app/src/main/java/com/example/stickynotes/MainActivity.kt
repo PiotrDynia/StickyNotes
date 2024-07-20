@@ -14,6 +14,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.room.Room
 import com.example.stickynotes.ui.theme.StickyNotesTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,7 +25,26 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             StickyNotesTheme {
-                val viewModel by viewModels<StickyNoteViewModel>()
+                val db by lazy {
+                    Room.databaseBuilder(
+                        applicationContext,
+                        StickyNoteDatabase::class.java,
+                        "sticky_notes.db"
+                    ).build()
+                }
+                val viewModel by viewModels<StickyNoteViewModel>(
+                    factoryProducer = {
+                        object : ViewModelProvider.Factory {
+                            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                                if (modelClass.isAssignableFrom(StickyNoteViewModel::class.java)) {
+                                    @Suppress("UNCHECKED_CAST")
+                                    return StickyNoteViewModel(db.dao()) as T
+                                }
+                                throw IllegalArgumentException("Unknown ViewModel class")
+                            }
+                        }
+                    }
+                )
                 val state by viewModel.state.collectAsState()
                 StickyNoteScreen(
                     state = state,

@@ -105,7 +105,7 @@ fun StickyNoteScreen(
                             )
                         },
                         onRemove = { onAction(StickyNoteAction.RemoveNote(note)) },
-                        backgroundColor = note.color
+                        backgroundColor = note.colorObj
                     )
                 }
             }

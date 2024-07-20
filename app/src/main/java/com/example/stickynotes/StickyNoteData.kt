@@ -4,14 +4,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
 
+@Entity (tableName = "StickyNote")
 data class StickyNoteData(
-    val id: Int,
-    var initialTitle: String = "",
-    val initialDescription: String = "",
-    val color: Color,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    var title: String = "",
+    var description: String = "",
+    val color: Int,
     var visible: Boolean = false
 ) {
-    var title by mutableStateOf(initialTitle)
-    var description by mutableStateOf(initialDescription)
+    @Ignore
+    var colorObj: Color = Color(color)
 }

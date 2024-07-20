@@ -1,5 +1,6 @@
 package com.example.stickynotes
 
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.stickynotes.ui.theme.LightBlue
@@ -17,25 +18,24 @@ import kotlinx.coroutines.launch
 private const val MAX_TITLE_LENGTH = 40
 private const val MAX_DESCRIPTION_LENGTH = 330
 
-class StickyNoteViewModel : ViewModel() {
+class StickyNoteViewModel(
+    private val dao: StickyNoteDao
+) : ViewModel() {
     private val _state = MutableStateFlow(StickyNoteState())
     val state: StateFlow<StickyNoteState> = _state.asStateFlow()
 
     private var currentColorIndex = 0
     private val stickyNoteBackgroundColorPalette =
         listOf(LightYellow, LightGreen, LightBlue, LightPink, LightPurple)
-    private var id = 1
 
     fun onAction(action: StickyNoteAction) {
         when (action) {
             StickyNoteAction.AddNote -> {
                 val newNote = StickyNoteData(
-                    id = id,
-                    color = stickyNoteBackgroundColorPalette[currentColorIndex]
+                    color = stickyNoteBackgroundColorPalette[currentColorIndex].toArgb()
                 )
 
                 currentColorIndex = (currentColorIndex + 1) % stickyNoteBackgroundColorPalette.size
-                id++
 
                 _state.update { currentState ->
                     currentState.copy(
@@ -52,25 +52,40 @@ class StickyNoteViewModel : ViewModel() {
                             }
                         )
                     }
+                    dao.upsertStickyNote(newNote)
                 }
             }
 
             is StickyNoteAction.UpdateDescription -> {
-                _state.update { currentState ->
-                    currentState.notes.find { it.id == action.note.id }?.let { note ->
-                        if (action.newDescription.length <= MAX_DESCRIPTION_LENGTH) note.description =
-                            action.newDescription
+                if (action.newDescription.length <= MAX_DESCRIPTION_LENGTH) {
+                    _state.update { currentState ->
+                        currentState.copy(
+                            notes = currentState.notes.map { note ->
+                                if (note.id == action.note.id)
+                                    note.copy(description = action.newDescription)
+                                else note
+                            }
+                        )
                     }
-                    currentState
+                    viewModelScope.launch {
+                        dao.upsertStickyNote(action.note.copy(description = action.newDescription))
+                    }
                 }
             }
 
             is StickyNoteAction.UpdateTitle -> {
-                _state.update { currentState ->
-                    currentState.notes.find { it.id == action.note.id }?.let { note ->
-                        if (action.newTitle.length <= MAX_TITLE_LENGTH) note.title = action.newTitle
+                if (action.newTitle.length <= MAX_TITLE_LENGTH) {
+                    _state.update { currentState ->
+                        currentState.copy(
+                            notes = currentState.notes.map { note ->
+                                if (note.id == action.note.id) note.copy(title = action.newTitle)
+                                else note
+                            }
+                        )
                     }
-                    currentState
+                    viewModelScope.launch {
+                        dao.upsertStickyNote(action.note.copy(title = action.newTitle))
+                    }
                 }
             }
 
@@ -79,6 +94,9 @@ class StickyNoteViewModel : ViewModel() {
                     val mutableList = currentState.notes.toMutableList()
                     mutableList.remove(action.note)
                     currentState.copy(notes = mutableList.toList())
+                }
+                viewModelScope.launch {
+                    dao.deleteStickyNote(action.note)
                 }
             }
         }
