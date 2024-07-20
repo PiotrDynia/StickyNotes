@@ -28,6 +28,23 @@ class StickyNoteViewModel(
     private val stickyNoteBackgroundColorPalette =
         listOf(LightYellow, LightGreen, LightBlue, LightPink, LightPurple)
 
+    init {
+        loadStickyNotes()
+    }
+
+    private fun loadStickyNotes() {
+        viewModelScope.launch {
+            val notes = getStickyNotes()
+            _state.update { currentState ->
+                currentState.copy(notes = notes)
+            }
+        }
+    }
+
+    private suspend fun getStickyNotes(): List<StickyNoteData> {
+        return dao.getStickyNotes()
+    }
+
     fun onAction(action: StickyNoteAction) {
         when (action) {
             StickyNoteAction.AddNote -> {
@@ -52,22 +69,29 @@ class StickyNoteViewModel(
                             }
                         )
                     }
-                    dao.upsertStickyNote(newNote)
+                    val id = dao.upsertStickyNote(newNote)
+                    _state.update { currentState ->
+                        currentState.copy(
+                            notes = currentState.notes.map { note ->
+                                if (note.id == newNote.id) note.copy(id = id.toInt()) else note
+                            }
+                        )
+                    }
                 }
             }
 
             is StickyNoteAction.UpdateDescription -> {
                 if (action.newDescription.length <= MAX_DESCRIPTION_LENGTH) {
-                    _state.update { currentState ->
-                        currentState.copy(
-                            notes = currentState.notes.map { note ->
-                                if (note.id == action.note.id)
-                                    note.copy(description = action.newDescription)
-                                else note
-                            }
-                        )
-                    }
                     viewModelScope.launch {
+                        _state.update { currentState ->
+                            currentState.copy(
+                                notes = currentState.notes.map { note ->
+                                    if (note.id == action.note.id)
+                                        note.copy(description = action.newDescription)
+                                    else note
+                                }
+                            )
+                        }
                         dao.upsertStickyNote(action.note.copy(description = action.newDescription))
                     }
                 }
@@ -75,27 +99,27 @@ class StickyNoteViewModel(
 
             is StickyNoteAction.UpdateTitle -> {
                 if (action.newTitle.length <= MAX_TITLE_LENGTH) {
-                    _state.update { currentState ->
-                        currentState.copy(
-                            notes = currentState.notes.map { note ->
-                                if (note.id == action.note.id) note.copy(title = action.newTitle)
-                                else note
-                            }
-                        )
-                    }
                     viewModelScope.launch {
+                        _state.update { currentState ->
+                            currentState.copy(
+                                notes = currentState.notes.map { note ->
+                                    if (note.id == action.note.id) note.copy(title = action.newTitle)
+                                    else note
+                                }
+                            )
+                        }
                         dao.upsertStickyNote(action.note.copy(title = action.newTitle))
                     }
                 }
             }
 
             is StickyNoteAction.RemoveNote -> {
-                _state.update { currentState ->
-                    val mutableList = currentState.notes.toMutableList()
-                    mutableList.remove(action.note)
-                    currentState.copy(notes = mutableList.toList())
-                }
                 viewModelScope.launch {
+                    _state.update { currentState ->
+                        val mutableList = currentState.notes.toMutableList()
+                        mutableList.remove(action.note)
+                        currentState.copy(notes = mutableList.toList())
+                    }
                     dao.deleteStickyNote(action.note)
                 }
             }
