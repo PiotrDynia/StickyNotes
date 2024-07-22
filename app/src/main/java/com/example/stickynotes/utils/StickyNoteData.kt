@@ -1,4 +1,4 @@
-package com.example.stickynotes
+package com.example.stickynotes.utils
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
