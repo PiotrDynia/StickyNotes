@@ -38,7 +38,7 @@ class DatabaseTests {
     }
 
     @Test
-    fun createStickyNoteAndReadInList() = runBlocking {
+    fun databaseTest_correctlyWritesAndReadsRecords() = runBlocking {
         val stickyNote = StickyNoteData(
             color = Color.Blue.toArgb(),
             title = "Test title",
@@ -50,5 +50,21 @@ class DatabaseTests {
         val expectedStickyNote = stickyNote.copy(id = newId.toInt())
 
         assert(notes.contains(expectedStickyNote)) { "Notes do not contain the expected sticky note" }
+    }
+
+    @Test
+    fun databaseTest_correctlyDeletesRecord() = runBlocking {
+        val stickyNote = StickyNoteData(
+            color = Color.Blue.toArgb(),
+            title = "Test title",
+            description = "Test description",
+            visible = true
+        )
+        val newId = stickyNoteDao.upsertStickyNote(stickyNote)
+        val insertedStickyNote = stickyNote.copy(id = newId.toInt())
+        stickyNoteDao.deleteStickyNote(insertedStickyNote)
+        val notes = stickyNoteDao.getStickyNotes()
+
+        assert(!notes.contains(insertedStickyNote)) { "Note wasn't deleted" }
     }
 }

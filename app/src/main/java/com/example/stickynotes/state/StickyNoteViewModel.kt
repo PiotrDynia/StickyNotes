@@ -119,9 +119,9 @@ class StickyNoteViewModel(
             is StickyNoteAction.RemoveNote -> {
                 viewModelScope.launch {
                     _state.update { currentState ->
-                        val mutableList = currentState.notes.toMutableList()
-                        mutableList.remove(action.note)
-                        currentState.copy(notes = mutableList.toList())
+                        currentState.copy(
+                            notes = currentState.notes.filterNot { it.id == action.note.id }
+                        )
                     }
                     dao.deleteStickyNote(action.note)
                 }
