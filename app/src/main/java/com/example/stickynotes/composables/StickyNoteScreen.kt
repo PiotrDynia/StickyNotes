@@ -29,6 +29,8 @@ import androidx.compose.ui.unit.dp
 import com.example.stickynotes.R
 import com.example.stickynotes.state.StickyNoteAction
 import com.example.stickynotes.state.StickyNoteState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -45,7 +47,7 @@ fun StickyNoteScreen(
             }) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Add sticky note"
+                    contentDescription = stringResource(R.string.floating_action_button_content_description)
                 )
             }
         },

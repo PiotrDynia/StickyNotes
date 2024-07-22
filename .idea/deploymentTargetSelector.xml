@@ -14,10 +14,10 @@
       <SelectionState runConfigName="stickyNoteViewModelTest_correctlyUpdatesTitle()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="stickyNoteViewModelTest_correctlyCreatesNote()">
+      <SelectionState runConfigName="DatabaseTests">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="DatabaseTests">
+      <SelectionState runConfigName="stickyNotesIntegrationTests_appIsCreated()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
