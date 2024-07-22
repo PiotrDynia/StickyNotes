@@ -52,14 +52,15 @@ class StickyNoteViewModel(
         when (action) {
             StickyNoteAction.AddNote -> {
                 val newNote = StickyNoteData(
-                    color = stickyNoteBackgroundColorPalette[currentColorIndex].toArgb()
+                    color = stickyNoteBackgroundColorPalette[currentColorIndex].toArgb(),
+                    visible = true
                 )
 
                 currentColorIndex = (currentColorIndex + 1) % stickyNoteBackgroundColorPalette.size
 
                 _state.update { currentState ->
                     currentState.copy(
-                        notes = currentState.notes + newNote
+                        notes = currentState.notes + newNote.copy(visible = false)
                     )
                 }
 
