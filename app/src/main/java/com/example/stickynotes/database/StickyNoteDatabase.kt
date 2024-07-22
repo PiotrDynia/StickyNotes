@@ -1,7 +1,8 @@
-package com.example.stickynotes
+package com.example.stickynotes.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.example.stickynotes.utils.StickyNoteData
 
 @Database(
     entities = [StickyNoteData::class],

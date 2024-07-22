@@ -1,10 +1,6 @@
-package com.example.stickynotes
+package com.example.stickynotes.composables
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.VisibilityThreshold
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -26,16 +22,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.example.stickynotes.R
+import com.example.stickynotes.state.StickyNoteAction
+import com.example.stickynotes.state.StickyNoteState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -52,7 +47,7 @@ fun StickyNoteScreen(
             }) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Add sticky note"
+                    contentDescription = stringResource(R.string.floating_action_button_content_description)
                 )
             }
         },

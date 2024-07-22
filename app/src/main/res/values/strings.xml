@@ -3,4 +3,5 @@
     <string name="headline_text">Your sticky notes (swipe to delete)</string>
     <string name="title_placeholder">Enter a meaningful title</string>
     <string name="description_placeholder">Enter a meaningful description</string>
+    <string name="floating_action_button_content_description">Add sticky note</string>
 </resources>

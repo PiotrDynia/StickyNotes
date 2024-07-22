@@ -1,4 +1,6 @@
-package com.example.stickynotes
+package com.example.stickynotes.state
+
+import com.example.stickynotes.utils.StickyNoteData
 
 data class StickyNoteState(
     val notes: List<StickyNoteData> = emptyList(),

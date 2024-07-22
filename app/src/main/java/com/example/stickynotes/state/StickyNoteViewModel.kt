@@ -1,13 +1,16 @@
-package com.example.stickynotes
+package com.example.stickynotes.state
 
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.stickynotes.utils.StickyNoteData
+import com.example.stickynotes.database.StickyNoteDao
 import com.example.stickynotes.ui.theme.LightBlue
 import com.example.stickynotes.ui.theme.LightGreen
 import com.example.stickynotes.ui.theme.LightPink
 import com.example.stickynotes.ui.theme.LightPurple
 import com.example.stickynotes.ui.theme.LightYellow
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,7 +36,7 @@ class StickyNoteViewModel(
     }
 
     private fun loadStickyNotes() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val notes = getStickyNotes()
             _state.update { currentState ->
                 currentState.copy(notes = notes)
@@ -49,14 +52,15 @@ class StickyNoteViewModel(
         when (action) {
             StickyNoteAction.AddNote -> {
                 val newNote = StickyNoteData(
-                    color = stickyNoteBackgroundColorPalette[currentColorIndex].toArgb()
+                    color = stickyNoteBackgroundColorPalette[currentColorIndex].toArgb(),
+                    visible = true
                 )
 
                 currentColorIndex = (currentColorIndex + 1) % stickyNoteBackgroundColorPalette.size
 
                 _state.update { currentState ->
                     currentState.copy(
-                        notes = currentState.notes + newNote
+                        notes = currentState.notes + newNote.copy(visible = false)
                     )
                 }
 
@@ -116,9 +120,9 @@ class StickyNoteViewModel(
             is StickyNoteAction.RemoveNote -> {
                 viewModelScope.launch {
                     _state.update { currentState ->
-                        val mutableList = currentState.notes.toMutableList()
-                        mutableList.remove(action.note)
-                        currentState.copy(notes = mutableList.toList())
+                        currentState.copy(
+                            notes = currentState.notes.filterNot { it.id == action.note.id }
+                        )
                     }
                     dao.deleteStickyNote(action.note)
                 }
