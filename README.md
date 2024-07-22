@@ -3,4 +3,4 @@ A simple TODO style app with sticky notes. Each note has a title and description
 To delete the note, swipe it to the left or right. The notes are persistent through Room SQL library.
 
 ## Presentation
-![recording](/recording/Recording.mov)
+![recording](/recording/Recording.gif)
